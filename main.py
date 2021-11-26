@@ -1,53 +1,48 @@
-from flask import Flask, render_template, request
+import cv2
+import imutils
+import numpy as np
+import pytesseract
+from PIL import Image
+pytesseract.tesseract_cmd = 'C:\Program Files\Tesseract-OCR\tesseract.exe'
+img = cv2.imread('C:/Users/pksg2/OneDrive/Desktop/2.jpg',cv2.IMREAD_COLOR)
+img = imutils.resize(img, width=500 )
+gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY) #convert to grey scale
+gray = cv2.bilateralFilter(gray, 11, 17, 17) #Blur to reduce noise
+edged = cv2.Canny(gray, 30, 200) #Perform Edge detection
+cnts,new = cv2.findContours(edged.copy(), cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
+img1=img.copy()
+cv2.drawContours(img1,cnts,-1,(0,255,0),3)
+cv2.imshow("img1",img1)
+cnts = sorted(cnts, key = cv2.contourArea, reverse = True)[:30]
+screenCnt = None #will store the number plate contour
+img2 = img.copy()
+cv2.drawContours(img2,cnts,-1,(0,255,0),3)
+cv2.imshow("img2",img2) #top 30 contours
 
-from flask_mysqldb import MySQL
+count=0
+idx=7
+# loop over contours
+for c in cnts:
+  # approximate the contour
+        peri = cv2.arcLength(c, True)
+        approx = cv2.approxPolyDP(c, 0.018 * peri, True)
+        if len(approx) == 4: #chooses contours with 4 corners
+                screenCnt = approx
+                x,y,w,h = cv2.boundingRect(c) #finds co-ordinates of the plate
+                new_img=img[y:y+h,x:x+w]
+                cv2.imwrite('./'+str(idx)+'.png',new_img) #stores the new image
+                idx+=1
+                break
+            #draws the selected contour on original image
+cv2.drawContours(img, [screenCnt], -1, (0, 255, 0), 3)
+cv2.imshow("Final image with plate detected",img)
 
-app = Flask(__name__)
+Cropped_loc='./7.png' #the filename of cropped image
+cv2.imshow("cropped",cv2.imread(Cropped_loc))
+pytesseract.pytesseract.tesseract_cmd=r"C:\Program Files\Tesseract-OCR\tesseract.exe" #exe file for using ocr
 
-# app.config['MYSQL_HOST'] = "localhost"
-# app.config['MYSQL_USER'] = "testuser"
-# app.config['MYSQL_PASSWORD'] = "password"
-# app.config['MYSQL_DB'] = "sdl"
+text=pytesseract.image_to_string(Cropped_loc,lang='eng') #converts image characters to string
+print("Number is:" ,text)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
 
-# mysql = MySQL(app)
-
-@app.route('/', methods=['GET', 'POST'])
-def home():
-    return render_template('home.html')
-
-@app.route('/users.html', methods=['GET', 'POST'])
-def users():
-    if request.method == 'POST':
-        vno = request.form['Vehicle Number']
-        cur = mysql.connection.cursor()
-        sql = "SELECT owner.Vehicle_Number, owner.First_Name, owner.Last_Name, owner.Phone_Number, owner.Gender, cars.Vehicle_Genre, cars.Vehicle_type, cars.additional_price, sum(price_structure.price_calculated) FROM owner, price_structure, cars WHERE owner.Vehicle_Number = %s AND owner.Vehicle_number=price_structure.Vehicle_Number AND owner.Vehicle_Number=cars.Vehicle_Number;"
-        args = [vno, ]
-        vnos = cur.execute(sql, args)
-        if vnos > 0:
-            ownerDetails = cur.fetchall()
-        else:
-            return render_template('error.html')
-
-        return render_template('table_user.html', ownerDetails=ownerDetails)#, priceDetails=priceDetails, sumDetails=sumDetails)
-    else:
-        return render_template('users.html')
-
-
-@app.route('/admin.html', methods=['GET', 'POST'])
-def admin():
-    if request.method == 'POST':
-        cid = request.form['Camera ID']
-        cur = mysql.connection.cursor()
-        sql = "Select cameras.camera_id, cameras.highway_number, cameras.address, cameras.type, cameras.distance_from_source, read_vehicle.vehicle_number FROM cameras, read_vehicle where cameras.camera_id=read_vehicle.camera_id AND cameras.camera_ID=%s;"
-        args = [cid, ]
-        cids = cur.execute(sql, args)
-        if cids > 0:
-            cameraDetails = cur.fetchall()
-        else:
-            return render_template('error.html')
-        return render_template('table_admin.html', cameraDetails=cameraDetails)
-    else:
-        return render_template('admin.html')
-
-if __name__ == "__main__":
-    app.run(debug=True,port=6969)
