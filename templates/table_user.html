@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html xmlns:align-content="http://www.w3.org/1999/xhtml">
+<head>
+<title>User Record</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" Navbar href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" Navbar href="userstyle.css">
+</head>
+<body style="background-color:LightYellow">
+<header class="w3-display-container w3-content w3-wide" style="max-width:1500px" id="home">
+  <img class="w3-image" src="https://www.veridiancu.org/webres/image/2019/News/Header/Buy%20Car%20Header_797x325_March%2019.jpg" alt="Architecture" width="1500" height="800">
+  </header>
+  <div class="w3-top">
+  <div class="w3-bar w3-white w3-wide w3-padding w3-card">
+    <a href="http://127.0.0.1:5000/" class="w3-bar-item w3-button"> DTTC | <b>Digital Toll Tax Calculator</b></a>
+    <!-- Float links to the right. Hide them on small screens -->
+    <div class="w3-right w3-hide-small">
+        <a href="http://127.0.0.1:5000/" class="w3-bar-item w3-button">Home</a>
+    </div>
+  </div>
+  </div>
+<div class="table_cap"><h4>Details for your vehicle</h4></div>
+  <table style="padding:10px; margin-left:200px;margin-top: 80px; padding-top:10px; margin-bottom:100px;" border="1px"
+    align-content: cen>
+
+   <!-- INSERT YOUR CODE TO READ USER TABLE-->
+<tr>
+   <th>Vehicle Number</th>
+   <th>First Name</th>
+   <th>Last Name</th>
+   <th>Phone Number</th>
+   <th>Gender</th>
+   <th>Vehicle Genre</th>
+   <th>Vehicle Type</th>
+   <th>Additional Price (Rs.)</th>
+   <th>Price Pending (Rs.)</th>
+    {% for vno in ownerDetails %}
+</tr>
+<td>{{vno[0]}}</td>
+<td>{{vno[1]}}</td>
+<td>{{vno[2]}}</td>
+<td>{{vno[3]}}</td>
+<td>{{vno[4]}}</td>
+<td>{{vno[5]}}</td>
+<td>{{vno[6]}}</td>
+<td>{{vno[7]}}</td>
+<td>{{vno[8]}}</td>
+
+{% endfor %}
+</table>
+<footer class="w3-center w3-black w3-padding-16">
+  <p><b>Digital Toll Tax Calculator</b> <br>
+  SHIV NADAR UNIVERSITY</p>
+</footer>
+</body>
+</html>
+<style>
+  .table_cap{
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+
+}
+  table { 
+  width: 70%; 
+  border-collapse: collapse; 
+}
+/* Zebra striping */
+tr:nth-of-type(odd) { 
+  background: #eee; 
+}
+th { 
+  background: #333; 
+  color: white; 
+  font-weight: bold; 
+}
+td, th { 
+  padding: 6px; 
+  border: 1px solid #ccc; 
+  text-align: left; 
+}
+/* 
+Max width before this PARTICULAR table gets nasty
+This query will take effect for any screen smaller than 760px
+and also iPads specifically.
+*/
+@media 
+only screen and (max-width: 760px),
+(min-device-width: 768px) and (max-device-width: 1024px)  {
+  table{
+    /* margin-left: auto;
+  margin-right: auto; */
+    width:70%; 
+    margin-left:auto; 
+    margin-right:auto; 
+
+
+
+  display: block;
+  }
+	/* Force table to not be like tables anymore */
+ thead, tbody,td, tr { 
+		display: block; 
+
+	}
+  th{
+    display: none;   
+  }
+	
+	/* Hide table headers (but not display: none;, for accessibility) */
+	thead tr { 
+		position: absolute;
+		top: -9999px;
+		left: -9999px;
+	}
+	
+	tr { border: 1px solid #ccc; }
+	
+	td { 
+		/* Behave  like a "row" */
+		border: none;
+		border-bottom: 1px solid #eee; 
+		position: relative;
+		padding-left: 60%; 
+    white-space: normal;
+
+	}
+	
+	td:before { 
+		/* Now like a table header */
+		position: absolute;
+		/* Top/left values mimic padding */
+		top: 6px;
+		left: 6px;
+		width: 45%; 
+		padding-right: 10px; 
+		white-space: nowrap;
+	}
+	
+	/*
+	Label the data
+	*/
+	td:nth-of-type(1):before { content: "Vehicle Number"; }
+	td:nth-of-type(2):before { content: "First Name"; }
+	td:nth-of-type(3):before { content: "Last Name"; }
+	td:nth-of-type(4):before { content: "Phone Number"; }
+	td:nth-of-type(5):before { content: "Gender"; }
+	td:nth-of-type(6):before { content: "Vehicle Genre"; }
+	td:nth-of-type(7):before { content: "Vehicle Type"; }
+	td:nth-of-type(8):before { content: "Additional Price (Rs.)"; }
+	td:nth-of-type(9):before { content: "Price Pending (Rs.)"; }
+}
+
+</style>

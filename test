@@ -1,0 +1,44 @@
++----------------------+--------+--------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------+------------------------+--------------------------------------------+----------------+----------------------+----------------------+--------------------+
+| Trigger              | Event  | Table        | Statement                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  | Timing | Created                | sql_mode                                   | Definer        | character_set_client | collation_connection | Database Collation |
++----------------------+--------+--------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------+------------------------+--------------------------------------------+----------------+----------------------+----------------------+--------------------+
+| ins_pr               | INSERT | exit_toll    | begin
+insert into price_structure
+set
+vehicle_number=new.vehicle_number,
+Distance_travelled=new.distance_from_source-(SELECT Distance_from_source FROM entry_toll where new.vehicle_number=entry_toll.vehicle_number && new.highway_number=entry_toll.highway_number),
+Price_calculated=(new.distance_from_source-(SELECT Distance_from_source FROM entry_toll where new.vehicle_number=entry_toll.vehicle_number && new.highway_number=entry_toll.highway_number))*(select price_per_km from highway where highway.highway_number=new.highway_number)+(select Additional_price from cars where cars.vehicle_number=new.vehicle_number);
+end                              | AFTER  | 2021-11-12 22:59:06.33 | STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION | root@localhost | cp850
+  | cp850_general_ci     | utf8mb4_0900_ai_ci |
+| ins_bef_read_vehicle | INSERT | read_vehicle | BEGIN
+if (Select type from cameras where cameras.camera_id=new.camera_id)="En" THEN
+SET New.Type="En";
+elseif (Select type from cameras where cameras.camera_id=new.camera_id)="Ex" THEN
+SET New.Type="Ex";
+END IF;
+END
+
+                                                                                                                                           | BEFORE | 2021-11-12 22:59:06.51 | STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION | root@localhost | cp850                | cp850_general_ci     | utf8mb4_0900_ai_ci |
+| ins_aft_read_vehicle | INSERT | read_vehicle | BEGIN
+if new.type="en" THEN
+INSERT INTO entry_toll SET camera_id=new.camera_id, vehicle_number=new.vehicle_number,
+highway_number=(Select Highway_number from Cameras where cameras.camera_id=new.camera_id),
+distance_from_source=(Select distance_from_source from Cameras where cameras.camera_id=new.camera_id),
+time=Now();
+elseif new.type="ex" THEN
+INSERT INTO exit_toll SET camera_id=new.camera_id, vehicle_number=new.vehicle_number,
+highway_number=(Select Highway_number from Cameras where cameras.camera_id=new.camera_id),
+distance_from_source=(Select distance_from_source from Cameras where cameras.camera_id=new.camera_id),
+time=Now();
+end if;
+end | AFTER  | 2021-11-12 22:59:06.52 | STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION | root@localhost | cp850                | cp850_general_ci     | utf8mb4_0900_ai_ci |
+| del_rec              | DELETE | read_vehicle | Begin
+IF old.type="en" then
+delete from entry_toll where old.camera_id=entry_toll.camera_id && old.vehicle_number=entry_toll.vehicle_number;
+ELSEIF old.type="ex" then
+delete from exit_toll where old.camera_id=exit_toll.camera_id && old.vehicle_number=exit_toll.vehicle_number;
+end if;
+end
+
+                                                                  | AFTER  | 2021-11-12 22:59:06.53 | STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION | root@localhost | cp850                | cp850_general_ci     | utf8mb4_0900_ai_ci |
++----------------------+--------+--------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------+------------------------+--------------------------------------------+----------------+----------------------+----------------------+--------------------+
+4 rows in set (0.01 sec)

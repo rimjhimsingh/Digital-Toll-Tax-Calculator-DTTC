@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Admin Record</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" Navbar href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" Navbar href="userstyle.css">
+<body style="background-color:LightYellow">
+
+    <header class="w3-display-container w3-content w3-wide" style="max-width:1500px;" id="home">
+      <img class="w3-image" src="https://www.veridiancu.org/webres/image/2019/News/Header/Buy%20Car%20Header_797x325_March%2019.jpg" alt="Architecture" width="1500" height="800">
+      </header>
+    
+      <div class="w3-top">
+      <div class="w3-bar w3-white w3-wide w3-padding w3-card">
+        <a href="http://127.0.0.1:5000/" class="w3-bar-item w3-button"> DTTC | <b>Digital Toll Tax Calculator</b></a>
+    
+    
+        <!-- Float links to the right. Hide them on small screens -->
+        <div class="w3-right w3-hide-small">
+    
+          <a href="http://127.0.0.1:5000/" class="w3-bar-item w3-button">Home</a>
+    
+        </div>
+      </div>
+    </div>
+<br>    
+    <form action="" method="post" novalidate>
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.vehicle_number.label }}<br>
+            {{ form.vehicle_number(size=32) }}<br>
+            {% for error in form.vehicle_number.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+            {{ form.first_name.label }}<br>
+            {{ form.first_name(size=32) }}<br>
+            {% for error in form.first_name.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+            {{ form.last_name.label }}<br>
+            {{ form.last_name(size=32) }}<br>
+            {% for error in form.last_name.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+            {{ form.phone_number.label }}<br>
+            {{ form.phone_number(size=32) }}<br>
+            {% for error in form.phone_number.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+            {{ form.gender.label }}<br>
+            {{ form.gender(size=32) }}<br>
+            {% for error in form.gender.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+            
+            {{ form.vehicle_type.label(class="form-control-label") }}
+            {{ form.vehicle_type(class="form-control") }}
+
+        <br>
+        {{ form.vehicle_category.label(class="form-control-label") }}
+        {{ form.vehicle_category(class="form-control") }}
+
+    <br>
+        </p>
+        
+        <p>{{ form.submit() }}</p>
+        <p>{{ message }}</p>
+
+        <footer class="w3-center w3-black w3-padding-16">
+            <p><b>Digital Toll Tax Calculator</b> <br>
+            SHIV NADAR UNIVERSITY</p>
+          </footer>
+          
+          </body>
+          </html>
+          
