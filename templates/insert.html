@@ -54,12 +54,14 @@
             {% for error in form.gender.errors %}
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
-            
+            <br>
             {{ form.vehicle_type.label(class="form-control-label") }}
+            <br>
             {{ form.vehicle_type(class="form-control") }}
-
+            <br>
         <br>
         {{ form.vehicle_category.label(class="form-control-label") }}
+        <br>
         {{ form.vehicle_category(class="form-control") }}
 
     <br>
@@ -75,4 +77,8 @@
           
           </body>
           </html>
-          
+          <style>
+                           p{
+                text-align: center;
+              }
+          </style>

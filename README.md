@@ -15,4 +15,8 @@ To run
 
     python3 test.py
 
+For license plate recognition 
 
+    python3 main.py
+
+admin page route: /demo.html
