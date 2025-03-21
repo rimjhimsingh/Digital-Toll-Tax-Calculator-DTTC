@@ -39,7 +39,7 @@ cv2.imshow("Final image with plate detected",img)
 
 Cropped_loc='./7.png' #the filename of cropped image
 cv2.imshow("cropped",cv2.imread(Cropped_loc))
-pytesseract.pytesseract.tesseract_cmd=r"C:\Program Files\Tesseract-OCR\tesseract.exe" #exe file for using ocr
+pytesseract.pytesseract_cmd = '/usr/bin/tesseract'
 
 text=pytesseract.image_to_string(Cropped_loc,lang='eng') #converts image characters to string
 print("Number is:" ,text)
